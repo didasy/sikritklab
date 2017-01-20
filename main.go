@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/JesusIslam/lowger"
+	"github.com/JesusIslam/sikritklab/custommiddleware"
 	"github.com/JesusIslam/sikritklab/handler"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -14,6 +15,7 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
+	e.Use(custommiddleware.DeleteOldThread)
 
 	e.GET("/thread/search", handler.ThreadSearch)
 	e.GET("/thread/random", handler.ThreadRandom)

@@ -20,8 +20,8 @@ func main() {
 	e.GET("/thread/search", handler.ThreadSearch)
 	e.GET("/thread/random", handler.ThreadRandom)
 	e.GET("/thread/id/:id", handler.ThreadGetByID)
-	e.POST("/thread/new", handler.ThreadNew)
-	e.POST("/thread/id/:id", handler.ThreadReplyByID)
+	e.POST("/thread/new", handler.ThreadNew, custommiddleware.CheckCaptcha)
+	e.POST("/thread/id/:id", handler.ThreadReplyByID, custommiddleware.CheckCaptcha)
 
 	host := ":8080"
 	if os.Getenv("SIKRIT_HOST") != "" {

@@ -6,13 +6,13 @@ import (
 )
 
 var (
-	TagsRegExp = regexp.MustCompile(`\ ?[a-zA-Z0-9]+\ ?`)
+	TagsRegExp = regexp.MustCompile(`\[a-zA-Z0-9]{2,32}\`)
 )
 
 type Thread struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Tags    string `json:"tags"`
+	Title   string   `json:"title"`
+	Content string   `json:"content"`
+	Tags    []string `json:"tags"`
 }
 
 func (t *Thread) Validate() (err error) {
@@ -24,13 +24,15 @@ func (t *Thread) Validate() (err error) {
 		err = fmt.Errorf("Invalid content: must be between 1 and 2000 characters long")
 	}
 
-	if len(t.Tags) < 2 || len(t.Tags) > 32 {
-		err = fmt.Errorf("Invalid tags: must be between 2 and 32 characters long")
+	if len(t.Tags) < 1 {
+		err = fmt.Errorf("Invalid tags: must not be empty")
 	}
 
-	// tags must be in the form of \ ?[a-ZA-Z0-9]+\ ?
-	if !TagsRegExp.MatchString(t.Tags) {
-		err = fmt.Errorf("Invalid tags: must be space separated string and alphanumerics only")
+	for _, tag := range t.Tags {
+		if !TagsRegExp.MatchString(tag) {
+			err = fmt.Errorf("Invalid tags: must be alphanumerics only")
+			break
+		}
 	}
 
 	return err

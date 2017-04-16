@@ -1,38 +1,41 @@
 package database
 
 import (
+	"crypto/rand"
 	"os"
-	"strconv"
+	"time"
 
 	"github.com/JesusIslam/lowger"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"github.com/asdine/storm"
+	"github.com/oklog/ulid"
+)
+
+const (
+	DBPathEnv = "SIKRITKLAB_DATABASE_PATH"
 )
 
 var (
-	DB                 *gorm.DB
-	PostLimitPerThread int
-	NotFound           = gorm.ErrRecordNotFound
-	ThreadDisplayOrder = "created_at DESC"
+	DB  *storm.DB
+	err error
 )
 
 func init() {
-	var err error
-
-	PostLimitPerThread, err = strconv.Atoi(os.Getenv("POST_LIMIT_PER_THREAD"))
-	if err != nil {
-		lowger.Fatal("POST_LIMIT_PER_THREAD environment variable is not a valid integer:", err)
+	dbPath := os.Getenv(DBPathEnv)
+	if dbPath == "" {
+		dbPath = "./sikritklab.db"
 	}
-
-	sqlConnString := os.Getenv("SQL_CONNECTION_STRING")
-	dialect := os.Getenv("SQL_DIALECT")
-
-	DB, err = gorm.Open(dialect, sqlConnString)
+	DB, err = storm.Open(dbPath)
 	if err != nil {
-		lowger.Fatal("Failed to establish database connection:", err)
+		lowger.Fatal("Failed to open database file:", err)
 	}
 }
 
-func New() *gorm.DB {
-	return DB.New()
+func NewThreadID() (string, error) {
+	t := ulid.Timestamp(time.Now())
+	id, err := ulid.New(t, rand.Reader)
+	if err != nil {
+		return "", err
+	}
+
+	return id.String(), nil
 }

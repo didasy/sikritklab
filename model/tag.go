@@ -8,16 +8,15 @@ import (
 )
 
 func init() {
-	err := database.DB.Init(&Post{})
+	err := database.DB.Init(&Tag{})
 	if err != nil {
-		lowger.Fatal("Failed to initialize database post:", err)
+		lowger.Fatal("Failed to initialize database tag:", err)
 	}
 }
 
-type Post struct {
+type Tag struct {
 	ID        int       `json:"id" storm:"id,increment"`
 	CreatedAt time.Time `json:"created_at" storm:"index"`
 	ThreadID  string    `json:"thread_id" storm:"index"`
-	Title     string    `json:"title,omitempty"`
-	Content   string    `json:"content"`
+	Tag       string    `json:"tag" storm:"index"`
 }

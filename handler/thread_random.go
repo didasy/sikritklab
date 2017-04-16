@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/JesusIslam/sikritklab/database"
+	"github.com/JesusIslam/sikritklab/model"
 	"github.com/JesusIslam/sikritklab/response"
 	"github.com/labstack/echo"
 )
@@ -21,18 +22,14 @@ func ThreadRandom(c echo.Context) (err error) {
 
 	rand.Seed(time.Now().UnixNano())
 
-	db := database.New()
-	var n int64
-	err = db.Table("threads").Count(&n).Error
+	// get count of threads
+	n := 0
+	n, err = database.DB.Count(&model.Thread{})
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusServiceUnavailable, resp)
-	}
-	if n < 1 {
-		resp.Error = "No thread found"
-		return c.JSON(http.StatusNotFound, resp)
+		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp.Message = BaseThreadPath + strconv.FormatInt(rand.Int63n(n), 10)
+	resp.Message = BaseThreadPath + strconv.FormatInt(rand.Int63n(int64(n)), 10)
 	return c.JSON(http.StatusOK, resp)
 }

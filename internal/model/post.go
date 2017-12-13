@@ -4,13 +4,14 @@ import (
 	"time"
 
 	"github.com/JesusIslam/lowger"
-	"github.com/JesusIslam/sikritklab/database"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/constant"
 )
 
 func init() {
 	err := database.DB.Init(&Post{})
 	if err != nil {
-		lowger.Fatal("Failed to initialize database post:", err)
+		lowger.Fatal(constant.ErrorFailedToInitializeDatabasePost, err)
 	}
 }
 

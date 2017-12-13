@@ -3,14 +3,14 @@ package handler
 import (
 	"net/http"
 
-	"github.com/JesusIslam/sikritklab/database"
-	"github.com/JesusIslam/sikritklab/model"
-	"github.com/JesusIslam/sikritklab/response"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/model"
+	"github.com/JesusIslam/sikritklab/internal/response"
 	"github.com/asdine/storm/q"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
-func ThreadGetByID(c echo.Context) (err error) {
+func ThreadGetByID(c *gin.Context) {
 	resp := &response.Response{}
 
 	threadID := c.Param("id")
@@ -18,7 +18,8 @@ func ThreadGetByID(c echo.Context) (err error) {
 	tx, err := database.DB.Begin(false)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// get the thread
@@ -27,7 +28,8 @@ func ThreadGetByID(c echo.Context) (err error) {
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// then get the first 500 posts sorted by created at oldest at top
@@ -38,7 +40,8 @@ func ThreadGetByID(c echo.Context) (err error) {
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// get the tags too
@@ -47,7 +50,8 @@ func ThreadGetByID(c echo.Context) (err error) {
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	tx.Commit()
@@ -57,5 +61,5 @@ func ThreadGetByID(c echo.Context) (err error) {
 		Posts:  posts,
 		Tags:   tags,
 	}
-	return c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, resp)
 }

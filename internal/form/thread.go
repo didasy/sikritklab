@@ -3,6 +3,8 @@ package form
 import (
 	"fmt"
 	"regexp"
+
+	"github.com/JesusIslam/sikritklab/internal/constant"
 )
 
 var (
@@ -17,20 +19,20 @@ type Thread struct {
 
 func (t *Thread) Validate() (err error) {
 	if len(t.Title) < 1 || len(t.Title) > 128 {
-		err = fmt.Errorf("Invalid title: must be between 1 and 128 characters long")
+		err = fmt.Errorf(constant.WarningInvalidTitle)
 	}
 
 	if len(t.Content) < 1 || len(t.Content) > 2000 {
-		err = fmt.Errorf("Invalid content: must be between 1 and 2000 characters long")
+		err = fmt.Errorf(constant.WarningInvalidContent)
 	}
 
 	if len(t.Tags) < 1 {
-		err = fmt.Errorf("Invalid tags: must not be empty")
+		err = fmt.Errorf(constant.WarningInvalidTextEmpty)
 	}
 
 	for _, tag := range t.Tags {
 		if !TagsRegExp.MatchString(tag) {
-			err = fmt.Errorf("Invalid tags: must be alphanumerics only")
+			err = fmt.Errorf(constant.WarningInvalidTextAlphanumerics)
 			break
 		}
 	}

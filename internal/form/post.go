@@ -2,6 +2,9 @@ package form
 
 import (
 	"fmt"
+
+
+	"github.com/JesusIslam/sikritklab/internal/constant"
 )
 
 type Post struct {
@@ -11,11 +14,11 @@ type Post struct {
 
 func (p *Post) Validate() (err error) {
 	if len(p.Content) < 1 || len(p.Content) > 2000 {
-		err = fmt.Errorf("Invalid content: must be between 1 and 2000 characters long")
+		err = fmt.Errorf(constant.WarningInvalidContent)
 	}
 
 	if len(p.Title) > 128 {
-		err = fmt.Errorf("Invalid title: cannot be more than 128 characters long")
+		err = fmt.Errorf(constant.WarningInvalidTitle)
 	}
 
 	return err

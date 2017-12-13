@@ -2,11 +2,11 @@ package: github.com/JesusIslam/sikritklab
 import:
 - package: github.com/JesusIslam/lowger
 - package: github.com/asdine/storm
-  version: ^0.7.0
-- package: github.com/haisum/recaptcha
-- package: github.com/labstack/echo
-  version: ^3.1.0-rc.1
+  version: ^2.0.0
   subpackages:
-  - middleware
+  - q
+- package: github.com/gin-gonic/gin
+  version: ^1.2.0
+- package: github.com/haisum/recaptcha
 - package: github.com/oklog/ulid
   version: ^0.3.0

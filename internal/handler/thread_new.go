@@ -4,27 +4,30 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/JesusIslam/sikritklab/database"
-	"github.com/JesusIslam/sikritklab/form"
-	"github.com/JesusIslam/sikritklab/model"
-	"github.com/JesusIslam/sikritklab/response"
-	"github.com/labstack/echo"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/form"
+	"github.com/JesusIslam/sikritklab/internal/model"
+	"github.com/JesusIslam/sikritklab/internal/response"
+	"github.com/gin-gonic/gin"
 )
 
-func ThreadNew(c echo.Context) (err error) {
+func ThreadNew(c *gin.Context) {
+	var err error
 	resp := &response.Response{}
 
 	threadForm := &form.Thread{}
 	err = c.Bind(threadForm)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusBadRequest, resp)
+		c.JSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	err = threadForm.Validate()
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusBadRequest, resp)
+		c.JSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	now := time.Now()
@@ -32,7 +35,8 @@ func ThreadNew(c echo.Context) (err error) {
 	threadID, err := database.NewThreadID()
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// create the thread
@@ -63,21 +67,24 @@ func ThreadNew(c echo.Context) (err error) {
 	tx, err := database.DB.Begin(true)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	err = tx.Save(thread)
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	err = tx.Save(post)
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	for _, tag := range tags {
@@ -85,12 +92,13 @@ func ThreadNew(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 	}
 
 	tx.Commit()
 
 	resp.Message = thread
-	return c.JSON(http.StatusCreated, resp)
+	c.JSON(http.StatusCreated, resp)
 }

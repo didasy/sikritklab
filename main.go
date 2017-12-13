@@ -2,30 +2,40 @@ package main
 
 import (
 	"os"
+	"strings"
 
 	"github.com/JesusIslam/lowger"
-	"github.com/JesusIslam/sikritklab/custommiddleware"
-	"github.com/JesusIslam/sikritklab/handler"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/JesusIslam/sikritklab/internal/constant"
+	"github.com/JesusIslam/sikritklab/internal/custommiddleware"
+	"github.com/JesusIslam/sikritklab/internal/handler"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	e := echo.New()
+	r := gin.New()
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
-	e.Use(custommiddleware.DeleteOldThread)
-
-	e.GET("/thread/search", handler.ThreadSearch)
-	e.GET("/thread/random", handler.ThreadRandom)
-	e.GET("/thread/id/:id", handler.ThreadGetByID)
-	e.POST("/thread/new", handler.ThreadNew, custommiddleware.CheckCaptcha)
-	e.POST("/thread/id/:id", handler.ThreadReplyByID, custommiddleware.CheckCaptcha)
-
-	host := ":8080"
-	if os.Getenv("SIKRIT_HOST") != "" {
-		host = os.Getenv("SIKRIT_HOST")
+	if os.Getenv(constant.EnvGinMode) != constant.EnvGinModeValueRelease {
+		r.Use(gin.Logger())
 	}
-	lowger.Fatal(e.Start(host))
+	r.Use(gin.Recovery())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     strings.Split(os.Getenv(constant.EnvOrigins), ","), // * or your url (https://example.com)
+		AllowMethods:     strings.Split(os.Getenv(constant.EnvMethods), ","), // should be GET,POST
+		AllowCredentials: true,
+	}))
+	r.Use(custommiddleware.DeleteOldThread())
+
+	r.GET("/thread/search", handler.ThreadSearch)
+	r.GET("/thread/random", handler.ThreadRandom)
+	r.GET("/thread/id/:id", handler.ThreadGetByID)
+	r.POST("/thread/new", custommiddleware.CheckCaptcha(), handler.ThreadNew)
+	r.POST("/thread/id/:id", custommiddleware.CheckCaptcha(), handler.ThreadReplyByID)
+
+	host := constant.DefaultHost
+	lowger.Info(constant.InfoListeningHost, host)
+	if os.Getenv(constant.EnvHost) != "" {
+		host = os.Getenv(constant.EnvHost)
+	}
+	lowger.Fatal(r.Run(host))
 }

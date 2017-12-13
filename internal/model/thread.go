@@ -4,13 +4,14 @@ import (
 	"time"
 
 	"github.com/JesusIslam/lowger"
-	"github.com/JesusIslam/sikritklab/database"
+	"github.com/JesusIslam/sikritklab/internal/constant"
+	"github.com/JesusIslam/sikritklab/internal/database"
 )
 
 func init() {
 	err := database.DB.Init(&Thread{})
 	if err != nil {
-		lowger.Fatal("Failed to initialize database thread:", err)
+		lowger.Fatal(constant.ErrorFailedToInitializeDatabaseThread, err)
 	}
 }
 

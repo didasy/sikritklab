@@ -4,21 +4,22 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/JesusIslam/sikritklab/database"
-	"github.com/JesusIslam/sikritklab/model"
-	"github.com/JesusIslam/sikritklab/response"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/model"
+	"github.com/JesusIslam/sikritklab/internal/response"
 	"github.com/asdine/storm/q"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
-func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) (err error) {
+func DeleteOldThread() gin.HandlerFunc {
+	return func(c *gin.Context) {
 		resp := &response.Response{}
 
 		tx, err := database.DB.Begin(true)
 		if err != nil {
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		// get all threads
@@ -27,7 +28,8 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		for _, thread := range threads {
@@ -39,7 +41,8 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 			if err != nil {
 				tx.Rollback()
 				resp.Error = err.Error()
-				return c.JSON(http.StatusInternalServerError, resp)
+				c.JSON(http.StatusInternalServerError, resp)
+				return
 			}
 
 			// delete the thread if last post is older than yesterday
@@ -49,7 +52,8 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 				if err != nil {
 					tx.Rollback()
 					resp.Error = err.Error()
-					return c.JSON(http.StatusInternalServerError, resp)
+					c.JSON(http.StatusInternalServerError, resp)
+					return
 				}
 
 				// delete all posts from the thread
@@ -58,7 +62,8 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 					if err != nil {
 						tx.Rollback()
 						resp.Error = err.Error()
-						return c.JSON(http.StatusInternalServerError, resp)
+						c.JSON(http.StatusInternalServerError, resp)
+						return
 					}
 				}
 
@@ -68,14 +73,16 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 				if err != nil {
 					tx.Rollback()
 					resp.Error = err.Error()
-					return c.JSON(http.StatusInternalServerError, resp)
+					c.JSON(http.StatusInternalServerError, resp)
+					return
 				}
 				for _, tag := range tags {
 					err = tx.DeleteStruct(tag)
 					if err != nil {
 						tx.Rollback()
 						resp.Error = err.Error()
-						return c.JSON(http.StatusInternalServerError, resp)
+						c.JSON(http.StatusInternalServerError, resp)
+						return
 					}
 				}
 			}
@@ -83,6 +90,6 @@ func DeleteOldThread(next echo.HandlerFunc) echo.HandlerFunc {
 
 		tx.Commit()
 
-		return next(c)
+		c.Next()
 	}
 }

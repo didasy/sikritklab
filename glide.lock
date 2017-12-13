@@ -1,60 +1,47 @@
-hash: a5215c82bc955f6ebfd33548cefe55ca71d90d331a5603002b70e7811c24f39d
-updated: 2017-04-16T23:43:14.52439945+07:00
+hash: d0a87007951839e4e21bf3451973d195d6e485933153387dca946aa8e6fad653
+updated: 2017-12-14T00:43:31.494507317+07:00
 imports:
 - name: github.com/asdine/storm
-  version: c40e8d95426a80b23797ca9818ff2142a9401ddf
+  version: dbd37722730b6cb703b5bd825c3f142d87358525
   subpackages:
   - codec
   - codec/json
   - index
   - internal
   - q
-- name: github.com/boltdb/bolt
-  version: e9cf4fae01b5a8ff89d0ec6b32f0d9c9f79aefdd
-- name: github.com/dgrijalva/jwt-go
-  version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
-- name: github.com/emirpasic/gods
-  version: f6c17b524822278a87e3b3bd809fec33b51f5b46
+- name: github.com/coreos/bbolt
+  version: 48ea1b39c25fc1bab3506fbc712ecbaa842c4d2d
+- name: github.com/gin-contrib/cors
+  version: 51f0ef8b07e973afb8b6c192bf90d5c3e575c01a
+- name: github.com/gin-contrib/sse
+  version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
+- name: github.com/gin-gonic/gin
+  version: d459835d2b077e44f7c9b453505ee29881d5d12d
   subpackages:
-  - containers
-  - trees
-  - trees/redblacktree
-  - utils
+  - binding
+  - render
+- name: github.com/golang/protobuf
+  version: 1e59b77b52bf8e4b449a57e6f79f21226d571845
+  subpackages:
+  - proto
 - name: github.com/haisum/recaptcha
   version: 7d3b8053900e7a0f549a11e800649a5fa950700f
 - name: github.com/JesusIslam/lowger
   version: 3efde894803ee5e7f5614bc93e157510ff158913
-- name: github.com/labstack/echo
-  version: 948d607539e92f3974d8f24951c8975d7342e24a
-  subpackages:
-  - middleware
-- name: github.com/labstack/gommon
-  version: 9cedb429ffbe71a32a3ae7c65fd109cb7ae07804
-  subpackages:
-  - bytes
-  - color
-  - log
-  - random
-- name: github.com/mattn/go-colorable
-  version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty
-  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/oklog/ulid
   version: d311cb43c92434ec4072dfbbda3400741d0a6337
-- name: github.com/valyala/fasttemplate
-  version: 3b874956e03f1636d171bda64b130f9135f42cff
-- name: golang.org/x/crypto
-  version: 8a549a1948fc5271eb24f36dcb0d3b47dec75a16
+- name: github.com/ugorji/go
+  version: bcec826260ae3be35231f9fa66f8e936702e0db0
   subpackages:
-  - acme
-  - acme/autocert
-- name: golang.org/x/net
-  version: 97edce0b2e423f6a8debb459af47f4a3cb4ff954
-  subpackages:
-  - context
-  - context/ctxhttp
+  - codec
 - name: golang.org/x/sys
-  version: ca83bd2cb9abb47839b50eb4da612f00158f5870
+  version: 9418b3fdda89831e55f1d80702d6bf2f06d5438f
   subpackages:
   - unix
+- name: gopkg.in/go-playground/validator.v8
+  version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
+- name: gopkg.in/yaml.v2
+  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 testImports: []

@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -22,7 +22,7 @@ type Search struct {
 	Tags           []string
 }
 
-func GetSearchForm(c echo.Context) *Search {
+func GetSearchForm(c *gin.Context) *Search {
 	search := &Search{
 		Page:           0,
 		PerPage:        10,
@@ -30,21 +30,21 @@ func GetSearchForm(c echo.Context) *Search {
 		OrderDirection: "reverse",
 	}
 
-	if perPage := c.QueryParam("per_page"); perPage != "" {
+	if perPage := c.Query("per_page"); perPage != "" {
 		p, err := strconv.ParseInt(perPage, 10, 32)
 		if err == nil {
 			search.PerPage = int(p)
 		}
 	}
 
-	if page := c.QueryParam("page"); page != "" {
+	if page := c.Query("page"); page != "" {
 		p, err := strconv.ParseInt(page, 10, 32)
 		if err == nil {
 			search.Page = int(p) * search.PerPage
 		}
 	}
 
-	if tagsStr := c.QueryParam("tags"); tagsStr != "" {
+	if tagsStr := c.Query("tags"); tagsStr != "" {
 		tagsStr = strings.TrimSpace(tagsStr)
 		tags := strings.Split(tagsStr, ",")
 
@@ -56,7 +56,7 @@ func GetSearchForm(c echo.Context) *Search {
 		}
 	}
 
-	if title := c.QueryParam("title"); title != "" {
+	if title := c.Query("title"); title != "" {
 		search.Title = title
 	}
 

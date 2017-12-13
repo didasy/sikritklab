@@ -6,12 +6,9 @@ import (
 	"time"
 
 	"github.com/JesusIslam/lowger"
+	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/asdine/storm"
 	"github.com/oklog/ulid"
-)
-
-const (
-	DBPathEnv = "SIKRITKLAB_DATABASE_PATH"
 )
 
 var (
@@ -20,9 +17,9 @@ var (
 )
 
 func init() {
-	dbPath := os.Getenv(DBPathEnv)
+	dbPath := os.Getenv(constant.EnvDatabasePath)
 	if dbPath == "" {
-		dbPath = "./sikritklab.db"
+		dbPath = constant.DefaultDBPath
 	}
 	DB, err = storm.Open(dbPath)
 	if err != nil {

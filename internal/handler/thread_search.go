@@ -4,17 +4,18 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/JesusIslam/sikritklab/database"
-	"github.com/JesusIslam/sikritklab/form"
-	"github.com/JesusIslam/sikritklab/model"
-	"github.com/JesusIslam/sikritklab/response"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/form"
+	"github.com/JesusIslam/sikritklab/internal/model"
+	"github.com/JesusIslam/sikritklab/internal/response"
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
 // Default order by created_at desc
-func ThreadSearch(c echo.Context) (err error) {
+func ThreadSearch(c *gin.Context) {
+	var err error
 	resp := &response.Response{}
 
 	search := form.GetSearchForm(c)
@@ -22,7 +23,8 @@ func ThreadSearch(c echo.Context) (err error) {
 	tx, err := database.DB.Begin(false)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	searched := false
@@ -35,7 +37,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		// check and collect with regex
@@ -58,7 +61,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		// collect the thread ID
@@ -80,7 +84,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		searched = true
@@ -92,7 +97,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 	}
 
@@ -106,7 +112,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		// then get the tags
@@ -115,7 +122,8 @@ func ThreadSearch(c echo.Context) (err error) {
 		if err != nil {
 			tx.Rollback()
 			resp.Error = err.Error()
-			return c.JSON(http.StatusInternalServerError, resp)
+			c.JSON(http.StatusInternalServerError, resp)
+			return
 		}
 
 		// then combine them
@@ -129,5 +137,5 @@ func ThreadSearch(c echo.Context) (err error) {
 	tx.Commit()
 
 	// resp.Message = threadPosts
-	return c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, resp)
 }

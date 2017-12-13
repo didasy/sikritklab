@@ -4,15 +4,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/JesusIslam/sikritklab/database"
-	"github.com/JesusIslam/sikritklab/form"
-	"github.com/JesusIslam/sikritklab/model"
-	"github.com/JesusIslam/sikritklab/response"
+	"github.com/JesusIslam/sikritklab/internal/database"
+	"github.com/JesusIslam/sikritklab/internal/form"
+	"github.com/JesusIslam/sikritklab/internal/model"
+	"github.com/JesusIslam/sikritklab/internal/response"
 	"github.com/asdine/storm/q"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
-func ThreadReplyByID(c echo.Context) (err error) {
+func ThreadReplyByID(c *gin.Context) {
+	var err error
 	resp := &response.Response{}
 
 	threadID := c.Param("id")
@@ -21,19 +22,22 @@ func ThreadReplyByID(c echo.Context) (err error) {
 	err = c.Bind(postForm)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusBadRequest, resp)
+		c.JSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	err = postForm.Validate()
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusBadRequest, resp)
+		c.JSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	tx, err := database.DB.Begin(true)
 	if err != nil {
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// trim expired posts (if more than 500 in this thread)
@@ -45,7 +49,8 @@ func ThreadReplyByID(c echo.Context) (err error) {
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	// then delete them one by one (the oldest) if more than 500 exists
@@ -56,7 +61,8 @@ func ThreadReplyByID(c echo.Context) (err error) {
 			if err != nil {
 				tx.Rollback()
 				resp.Error = err.Error()
-				return c.JSON(http.StatusInternalServerError, resp)
+				c.JSON(http.StatusInternalServerError, resp)
+				return
 			}
 		}
 	}
@@ -73,11 +79,12 @@ func ThreadReplyByID(c echo.Context) (err error) {
 	if err != nil {
 		tx.Rollback()
 		resp.Error = err.Error()
-		return c.JSON(http.StatusInternalServerError, resp)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	tx.Commit()
 
 	resp.Message = post
-	return c.JSON(http.StatusCreated, resp)
+	c.JSON(http.StatusCreated, resp)
 }

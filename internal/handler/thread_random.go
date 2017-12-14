@@ -7,6 +7,7 @@ import (
 
 	"strconv"
 
+	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/JesusIslam/sikritklab/internal/database"
 	"github.com/JesusIslam/sikritklab/internal/model"
 	"github.com/JesusIslam/sikritklab/internal/response"
@@ -28,6 +29,11 @@ func ThreadRandom(c *gin.Context) {
 	if err != nil {
 		resp.Error = err.Error()
 		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	if n == 0 {
+		resp.Error = constant.WarningNoThreadFound
+		c.JSON(http.StatusNotFound, resp)
 		return
 	}
 

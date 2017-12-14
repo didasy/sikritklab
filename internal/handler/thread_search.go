@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/JesusIslam/sikritklab/internal/database"
 	"github.com/JesusIslam/sikritklab/internal/form"
 	"github.com/JesusIslam/sikritklab/internal/model"
@@ -60,7 +61,7 @@ func ThreadSearch(c *gin.Context) {
 		).Find(&tags)
 		if err != nil {
 			tx.Rollback()
-			resp.Error = err.Error()
+			resp.Error = constant.ErrorFindingTags + err.Error()
 			c.JSON(http.StatusInternalServerError, resp)
 			return
 		}
@@ -83,7 +84,7 @@ func ThreadSearch(c *gin.Context) {
 		).OrderBy("CreatedAt").Reverse().Skip(search.Page).Limit(search.PerPage).Find(&threads)
 		if err != nil {
 			tx.Rollback()
-			resp.Error = err.Error()
+			resp.Error = constant.ErrorFindingThreads + err.Error()
 			c.JSON(http.StatusInternalServerError, resp)
 			return
 		}
@@ -96,8 +97,12 @@ func ThreadSearch(c *gin.Context) {
 		err = tx.Select(nil).OrderBy("CreatedAt").Reverse().Skip(search.Page).Limit(search.PerPage).Find(&threads)
 		if err != nil {
 			tx.Rollback()
-			resp.Error = err.Error()
-			c.JSON(http.StatusInternalServerError, resp)
+			resp.Error = constant.ErrorFindingThreadSearch + err.Error()
+			status := http.StatusInternalServerError
+			if err == storm.ErrNotFound {
+				status = http.StatusNotFound
+			}
+			c.JSON(status, resp)
 			return
 		}
 	}
@@ -111,7 +116,7 @@ func ThreadSearch(c *gin.Context) {
 		).OrderBy("CreatedAt").Limit(1).Find(&posts)
 		if err != nil {
 			tx.Rollback()
-			resp.Error = err.Error()
+			resp.Error = constant.ErrorFindingPost + err.Error()
 			c.JSON(http.StatusInternalServerError, resp)
 			return
 		}
@@ -121,7 +126,7 @@ func ThreadSearch(c *gin.Context) {
 		err = tx.Find("ThreadID", thread.ID, &tags)
 		if err != nil {
 			tx.Rollback()
-			resp.Error = err.Error()
+			resp.Error = constant.ErrorFindingPostTags + err.Error()
 			c.JSON(http.StatusInternalServerError, resp)
 			return
 		}
@@ -136,6 +141,6 @@ func ThreadSearch(c *gin.Context) {
 
 	tx.Commit()
 
-	// resp.Message = threadPosts
+	resp.Message = threadPosts
 	c.JSON(http.StatusOK, resp)
 }

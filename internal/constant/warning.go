@@ -5,4 +5,5 @@ const (
 	WarningInvalidTitle     = "Invalid title: cannot be more than 128 characters long"
 	WarningInvalidTextEmpty = "Invalid tags: must not be empty"
 	WarningInvalidTextAlphanumerics = "Invalid tags: must be alphanumerics only"
+	WarningNoThreadFound = "No thread found"
 )

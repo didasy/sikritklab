@@ -27,12 +27,14 @@ func CheckCaptcha() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		resp := &response.Response{}
 
-		// must be sent as post form g-recaptcha-response
-		isValid := re.Verify(*c.Request)
-		if !isValid {
-			resp.Error = constant.ErrorInvalidCaptcha
-			c.JSON(http.StatusForbidden, resp)
-			return
+		if os.Getenv(constant.EnvEnableRecaptcha) == "true" {
+			// must be sent as post form g-recaptcha-response
+			isValid := re.Verify(*c.Request)
+			if !isValid {
+				resp.Error = constant.ErrorInvalidCaptcha
+				c.JSON(http.StatusForbidden, resp)
+				return
+			}
 		}
 
 		c.Next()

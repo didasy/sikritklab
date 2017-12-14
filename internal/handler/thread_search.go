@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/JesusIslam/sikritklab/internal/database"
@@ -94,7 +95,7 @@ func ThreadSearch(c *gin.Context) {
 
 	if !searched {
 		// get the threads normally if no search
-		err = tx.Select(nil).OrderBy("CreatedAt").Reverse().Skip(search.Page).Limit(search.PerPage).Find(&threads)
+		err = tx.Select(q.Lte("CreatedAt", time.Now())).OrderBy("CreatedAt").Reverse().Skip(search.Page).Limit(search.PerPage).Find(&threads)
 		if err != nil {
 			tx.Rollback()
 			resp.Error = constant.ErrorFindingThreadSearch + err.Error()

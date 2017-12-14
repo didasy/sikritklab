@@ -2,6 +2,7 @@ package constant
 
 const (
 	EnvRecaptchaSecret = "SIKRITKLAB_RECAPTCHA_SECRET"
+	EnvEnableRecaptcha = "SIKRITKLAB_ENABLE_RECAPTCHA"
 
 	EnvDatabasePath = "SIKRITKLAB_DATABASE_PATH"
 

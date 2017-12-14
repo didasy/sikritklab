@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	TagsRegExp = regexp.MustCompile(`/[a-zA-Z0-9]{2,32}/`)
+	TagsRegExp = regexp.MustCompile(`[a-zA-Z0-9]{2,32}`)
 )
 
 type Thread struct {

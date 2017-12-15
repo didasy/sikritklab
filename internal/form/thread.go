@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/JesusIslam/sikritklab/internal/constant"
+	"github.com/mvdan/xurls"
 )
 
 var (
@@ -15,9 +16,20 @@ type Thread struct {
 	Title   string   `json:"title"`
 	Content string   `json:"content"`
 	Tags    []string `json:"tags"`
+	Image   string   `json:"image,omitempty"`
 }
 
 func (t *Thread) Validate() (err error) {
+	if len(t.Image) > 0 {
+		if len(t.Image) > 1024 {
+			err = fmt.Errorf(constant.WarningInvalidImage)
+			return
+		}
+		if !xurls.Strict().MatchString(t.Image) {
+			err = fmt.Errorf(constant.WarningInvalidImage)
+		}
+	}
+
 	if len(t.Title) < 1 || len(t.Title) > 128 {
 		err = fmt.Errorf(constant.WarningInvalidTitle)
 	}

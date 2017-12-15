@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/JesusIslam/lowger"
-	"github.com/JesusIslam/sikritklab/internal/database"
 	"github.com/JesusIslam/sikritklab/internal/constant"
+	"github.com/JesusIslam/sikritklab/internal/database"
 )
 
 func init() {
@@ -21,4 +21,5 @@ type Post struct {
 	ThreadID  string    `json:"thread_id" storm:"index"`
 	Title     string    `json:"title,omitempty"`
 	Content   string    `json:"content"`
+	Image     string    `json:"image,omitempty"`
 }

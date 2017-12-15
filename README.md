@@ -39,7 +39,8 @@ JSON
 {
     "title": "A string",
     "content": "A longer string",
-    "tags": ["many", "tags"]
+    "tags": ["many", "tags"],
+    "image": "http://placehold.it/100x100"
 }
 ```
 
@@ -49,6 +50,7 @@ JSON
 JSON
 {
     "title": "A string",
-    "Content": "A longer string"
+    "content": "A longer string",
+    "image": "http://placehold.it/100x100"
 }
 ```

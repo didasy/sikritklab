@@ -8,6 +8,7 @@ import (
 	"github.com/JesusIslam/lowger"
 	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/asdine/storm"
+	bolt "github.com/coreos/bbolt"
 	"github.com/oklog/ulid"
 )
 
@@ -21,7 +22,9 @@ func init() {
 	if dbPath == "" {
 		dbPath = constant.DefaultDBPath
 	}
-	DB, err = storm.Open(dbPath)
+	DB, err = storm.Open(dbPath, storm.BoltOptions(0644, &bolt.Options{
+		Timeout: time.Second,
+	}))
 	if err != nil {
 		lowger.Fatal("Failed to open database file:", err)
 	}

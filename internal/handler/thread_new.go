@@ -44,6 +44,7 @@ func ThreadNew(c *gin.Context) {
 		ID:        threadID,
 		CreatedAt: now,
 		Title:     threadForm.Title,
+		Image:     threadForm.Image,
 	}
 
 	// and the first post
@@ -51,6 +52,7 @@ func ThreadNew(c *gin.Context) {
 		CreatedAt: now,
 		ThreadID:  threadID,
 		Content:   threadForm.Content,
+		Image:     threadForm.Image,
 	}
 
 	// and the tags

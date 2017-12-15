@@ -73,6 +73,7 @@ func ThreadReplyByID(c *gin.Context) {
 		Title:     postForm.Title,
 		Content:   postForm.Content,
 		ThreadID:  threadID,
+		Image:     postForm.Image,
 	}
 
 	err = tx.Save(post)

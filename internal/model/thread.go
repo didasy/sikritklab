@@ -19,4 +19,5 @@ type Thread struct {
 	ID        string    `json:"id" storm:"id"`
 	CreatedAt time.Time `json:"created_at" storm:"index"`
 	Title     string    `json:"title"`
+	Image     string    `json:"image,omitempty"`
 }

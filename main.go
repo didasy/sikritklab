@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strings"
+	"time"
 
 	"github.com/JesusIslam/lowger"
 	"github.com/JesusIslam/sikritklab/internal/constant"
@@ -19,11 +20,16 @@ func main() {
 		r.Use(gin.Logger())
 	}
 	r.Use(gin.Recovery())
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     strings.Split(os.Getenv(constant.EnvOrigins), ","), // * or your url (https://example.com)
-		AllowMethods:     strings.Split(os.Getenv(constant.EnvMethods), ","), // should be GET,POST
-		AllowCredentials: true,
-	}))
+	if os.Getenv(constant.EnvCORS) == "true" {
+		r.Use(cors.New(cors.Config{
+			AllowOrigins:     strings.Split(os.Getenv(constant.EnvOrigins), ","), // * or your url (https://example.com)
+			AllowMethods:     strings.Split(os.Getenv(constant.EnvMethods), ","), // should be GET,POST
+			AllowHeaders:     strings.Split(os.Getenv(constant.EnvAllowHeaders), ","),
+			ExposeHeaders:    strings.Split(os.Getenv(constant.EnvExposeHeaders), ","),
+			AllowCredentials: false,
+			MaxAge:           12 * time.Hour,
+		}))
+	}
 	r.Use(custommiddleware.DeleteOldThread())
 
 	r.GET("/thread/search", handler.ThreadSearch)

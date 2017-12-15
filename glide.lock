@@ -1,5 +1,5 @@
 hash: d0a87007951839e4e21bf3451973d195d6e485933153387dca946aa8e6fad653
-updated: 2017-12-14T00:43:31.494507317+07:00
+updated: 2017-12-14T15:37:14.770470588+07:00
 imports:
 - name: github.com/asdine/storm
   version: dbd37722730b6cb703b5bd825c3f142d87358525
@@ -30,6 +30,8 @@ imports:
   version: 3efde894803ee5e7f5614bc93e157510ff158913
 - name: github.com/mattn/go-isatty
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+- name: github.com/mvdan/xurls
+  version: 284d56d6f9b9a86a9d5dcf57ec1340731a356d1b
 - name: github.com/oklog/ulid
   version: d311cb43c92434ec4072dfbbda3400741d0a6337
 - name: github.com/ugorji/go

@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"strconv"
+	"github.com/asdine/storm"
 
-	"github.com/JesusIslam/sikritklab/internal/constant"
 	"github.com/JesusIslam/sikritklab/internal/database"
 	"github.com/JesusIslam/sikritklab/internal/model"
 	"github.com/JesusIslam/sikritklab/internal/response"
@@ -23,20 +22,21 @@ func ThreadRandom(c *gin.Context) {
 
 	rand.Seed(time.Now().UnixNano())
 
+	// get all threads
+	threads := []*model.Thread{}
+
 	// get count of threads
-	n := 0
-	n, err := database.DB.Count(&model.Thread{})
+	err := database.DB.AllByIndex("CreatedAt", &threads, storm.Reverse())
 	if err != nil {
 		resp.Error = err.Error()
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	if n == 0 {
-		resp.Error = constant.WarningNoThreadFound
-		c.JSON(http.StatusNotFound, resp)
-		return
-	}
 
-	resp.Message = BaseThreadPath + strconv.FormatInt(rand.Int63n(int64(n)), 10)
+	lengthOfThreads := len(threads)
+	randomIndex := rand.Int63n(int64(lengthOfThreads))
+	randomThreadID := threads[randomIndex].ID
+
+	resp.Message = BaseThreadPath + randomThreadID
 	c.JSON(http.StatusOK, resp)
 }

@@ -13,10 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	BaseThreadPath = "/thread/id/"
-)
-
 func ThreadRandom(c *gin.Context) {
 	resp := &response.Response{}
 
@@ -37,6 +33,6 @@ func ThreadRandom(c *gin.Context) {
 	randomIndex := rand.Int63n(int64(lengthOfThreads))
 	randomThreadID := threads[randomIndex].ID
 
-	resp.Message = BaseThreadPath + randomThreadID
+	resp.Message = randomThreadID
 	c.JSON(http.StatusOK, resp)
 }

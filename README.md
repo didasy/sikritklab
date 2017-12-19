@@ -65,7 +65,7 @@ Returns:
   Get random thread, returns:
 
 ```
-/thread/id/{{thread_id}}
+{{thread_id}}
 ```
 
 * GET /thread/id/:id
